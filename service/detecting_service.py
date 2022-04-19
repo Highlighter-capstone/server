@@ -94,7 +94,7 @@ def detect_smile(frame_data, path):
 
     return get_emotion_by_image(path, frame_data)
 
-    
+
 
 
 
