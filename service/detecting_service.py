@@ -21,9 +21,22 @@ def get_highlight_times():
     right=-1
     buff=0
     list=[]
+    last=len(frames)
 
     #장면마다
     for frame in frames:
+        if right!=-1 && n==last-1:
+            temp=[]
+            buff=0
+            #초반 2초
+            if left<2:
+                temp.append(0)
+                temp.append(right)
+            else:
+                temp.append(left-2)
+                temp.append(right)
+            list.append(temp)
+            break
         #웃는얼굴찾기 실패
         if not(detect_people(frame)):
             #버퍼큐에 있는데 실패중
@@ -54,6 +67,7 @@ def get_highlight_times():
             else:
                 right=n
             buff=0
+        
         n+=1
     return list
 
