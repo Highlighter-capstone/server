@@ -12,20 +12,68 @@ def get_frames(file_name):
     for i in range(max_value + 1):
         frames.append(os.path.join(dir_path, (file_name + str(i) + ".jpg")))
     return frames
-'''
+
 def get_highlight_times():
     frames = get_frames()
-    for frame in frames:
-        if not(detect_smile(frame) and detect_people(frame)):
-            continue
-        else:
-            # Buffer Queue 적용
-'''
+    n=0
+    left=-1
+    right=-1
+    buff=0
+    list=[]
 
+    #장면마다
+    for frame in frames:
+        #웃는얼굴찾기 실패
+        if not(detect_people(frame)):
+            #버퍼큐에 있는데 실패중
+            if right!=-1:
+                buff+=1;
+            #버퍼큐에 있는데 3초동안 웃는얼굴 안나옴
+            if buff==3:
+                temp=[]
+                buff=0
+                #초반 2초
+                if left<2:
+                    temp.append(0)
+                    temp.append(right)
+                else:
+                    temp.append(left-2)
+                    temp.append(right)
+                left=-1
+                right=-1
+                list.append(temp)
+            continue
+        #웃는얼굴 찾음
+        else:
+            #버퍼큐에 없음
+            if left==-1: 
+                left=n
+                right=n
+            #버퍼큐에 있음
+            else:
+                right=n
+            buff=0
+        n+=1
+     return list   
+
+            # Buffer Queue 적용
+
+
+
+
+#yolov5
 def detect_people(file_name):
     result = detect.run(weights="../yolo/yolov5/best.pt",
                         source="../datasets/frame/" + str(file_name))
-    print(result)
+    if(result[detect]):
+        return detect_smile(result)
+    else:
+        return False
+
+
+#Haar Cascade
+def detect_smile(ob):
+    
 
 '''
 #yolo test
