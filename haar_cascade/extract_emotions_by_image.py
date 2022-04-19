@@ -47,7 +47,7 @@ def get_emotion_by_image(image, coordinates):
       
         if emotion_text == 'happy':
             return True
-
+    return False
 
 
 ## test
