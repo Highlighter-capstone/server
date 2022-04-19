@@ -29,6 +29,8 @@ pip install h5py==2.10.0
 
 > fer2013.tar.gz file
 
+- [다운로드](https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/data)
+
 - Facial Emotion Recongintion in FER2013 Dataset Using Conv
 
 - Download and extract this file to use
