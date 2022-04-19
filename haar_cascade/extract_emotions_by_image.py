@@ -11,44 +11,26 @@ from utils.inference import apply_offsets
 from utils.inference import load_detection_model
 from utils.preprocessor import preprocess_input
 
+emotion_model_path = './haar_cascade/models/emotion_model.hdf5'
+emotion_labels = get_labels('fer2013')
+emotion_classifier = load_model(emotion_model_path)
+emotion_target_size = emotion_classifier.input_shape[1:3]
 
-def get_emotion_by_image(image):
 
-
-    emotion_list = []
-    
-    # parameters for loading data and images
-    emotion_model_path = './server/haar_cascade/models/emotion_model.hdf5'
-    emotion_labels = get_labels('fer2013')
-
-    # hyper-parameters for bounding boxes shape
-    frame_window = 10
-    emotion_offsets = (20, 40)
-
-    # loading models
-    face_cascade = cv2.CascadeClassifier('./server/haar_cascade/models/haarcascade_frontalface_default.xml')
-    emotion_classifier = load_model(emotion_model_path)
-
-    # getting input model shapes for inference
-    emotion_target_size = emotion_classifier.input_shape[1:3]
-
-    # starting lists for calculating modes
-    emotion_window = []
-    
-    cv2.namedWindow('window_frame')
-    bgr_image = cv2.imread(image)
-    
-
-    gray_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2GRAY)
-    rgb_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2RGB)
+def get_emotion_by_image(image, coordinates):
   
+    bgr_image = cv2.imread(image)
+    gray_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2GRAY)
+  
+    for coordinate in coordinates.values():
+        if coordinate == True:
+            continue
+        x1 = int(coordinate[0])
+        y1 = int(coordinate[1])
+        x2 = int(coordinate[2])
+        y2 = int(coordinate[3])
 
-    faces = face_cascade.detectMultiScale(gray_image, scaleFactor=1.1, minNeighbors=5,
-			minSize=(30, 30), flags=cv2.CASCADE_SCALE_IMAGE)
 
-    for face_coordinates in faces:
-
-        x1, x2, y1, y2 = apply_offsets(face_coordinates, emotion_offsets)
         gray_face = gray_image[y1:y2, x1:x2]
         try:
             gray_face = cv2.resize(gray_face, (emotion_target_size))
@@ -62,41 +44,15 @@ def get_emotion_by_image(image):
         emotion_probability = np.max(emotion_prediction)
         emotion_label_arg = np.argmax(emotion_prediction)
         emotion_text = emotion_labels[emotion_label_arg]
-        emotion_window.append(emotion_text)
-
-        emotion_list.append([face_coordinates[2], emotion_text]) #to sort by width
-
-        if len(emotion_window) > frame_window:
-            emotion_window.pop(0)
-        try:
-            emotion_mode = mode(emotion_window)
-        except:
-            continue
-        if emotion_text == 'angry':
-            color = emotion_probability * np.asarray((255, 0, 0))
-        elif emotion_text == 'sad':
-            color = emotion_probability * np.asarray((0, 0, 255))
-        elif emotion_text == 'happy':
-            color = emotion_probability * np.asarray((255, 255, 0))
-            #return True
-        elif emotion_text == 'surprise':
-            color = emotion_probability * np.asarray((0, 255, 255))
-        else:
-            color = emotion_probability * np.asarray((0, 255, 0))
-
-        color = color.astype(int)
-        color = color.tolist()
-
-        draw_bounding_box(face_coordinates, rgb_image, color)
-        draw_text(face_coordinates, rgb_image, emotion_mode,
-                  color, 0, -45, 1, 1)
-
-    bgr_image = cv2.cvtColor(rgb_image, cv2.COLOR_RGB2BGR)
-    cv2.imshow('window_frame', bgr_image)
-    cv2.waitKey(10000)
+      
+        if emotion_text == 'happy':
+            return True
 
 
-result = get_emotion_by_image('./server/haar_cascade/demo/iu.PNG')
+
+## test
+
+# result = get_emotion_by_image('./haar_cascade/demo/test.jpg',{'detect': True, 0: [648.0, 526.0, 753.0, 680.0], 1: [657.0, 313.0, 793.0, 618.0], 2: [417.0, 309.0, 548.0, 562.0], 3: [282.0, 373.0, 422.0, 764.0], 4: [113.0, 383.0, 279.0, 606.0], 5: [522.0, 411.0, 645.0, 681.0], 6: [412.0, 531.0, 564.0, 845.0], 7: [154.0, 555.0, 331.0, 855.0], 8: [613.0, 602.0, 892.0, 853.0]})
 
 # if result == True :
 #     print("happy")
