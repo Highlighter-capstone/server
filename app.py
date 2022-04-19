@@ -8,16 +8,14 @@ app = Flask(__name__)
 @app.route('/', methods = ['POST'])
 def extract_highlight_times():
     params = json.loads(request.get_data(), encoding='utf-8')
-    print(params)
+    video_name = params['video_name']
     if len(params) == 0:
         return json.dumps({'success' : False, 'time' : []})
-    try:
-        video_loading_service.load_video(params["video_name"])
-        video_loading_service.split_video(params["video_name"])
 
-        return json.dumps({'success' : False, 'time' : [43]})
-    except:
-        return json.dumps({'success' : True, 'time' : [{'min' : 123, 'max' : 234}]})
+    video_loading_service.load_video(video_name)
+    video_loading_service.split_video(video_name)
+    result = detecting_service.get_highlight_times(video_name)
+    return json.dumps({'success' : False, 'time' : [43]})
 
 
 if __name__ == '__main__':
