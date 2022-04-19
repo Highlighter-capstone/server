@@ -4,29 +4,61 @@ from yolo.yolov5 import detect
 
 def get_frames(file_name):
     # frame들 이름 가져오기
-    dir_path = "../datasets/frame"
+    folder_name = file_name.split(".")[0]
+    dir_path = "../datasets/frame/" + folder_name
     frames = []
     max_value = -1
     for root, directories, files in os.walk(dir_path):
         for file in files:
+<<<<<<< HEAD
             max_value = max(
                 int(file.split("frame")[1].split(".")[0]), max_value)
+=======
+            max_value = max(int(file.split("_")[1].split(".")[0]), max_value)
+>>>>>>> 07c9deb40b7b4b2431fa2a0e686a3af67aceb4f4
     for i in range(max_value + 1):
-        frames.append(os.path.join(dir_path, (file_name + str(i) + ".jpg")))
+        frames.append(os.path.join(dir_path, (folder_name + "_" + str(i) + ".jpg")))
     return frames
+
+#print(get_frames("yoonjong-2022-04-19-23:01:00.mp4"))
 '''
 # 하이라이트 시간 추출
 def get_highlight_times():
     frames = get_frames()
+<<<<<<< HEAD
     n = 0
     left = -1
     right = -1
     buff = 0
     list = []
+=======
+    n=0
+    left=-1
+    right=-1
+    buff=0
+    list=[]
+    last=len(frames)
+>>>>>>> 07c9deb40b7b4b2431fa2a0e686a3af67aceb4f4
 
     # 장면마다
     for frame in frames:
+<<<<<<< HEAD
         # 웃는얼굴찾기 실패
+=======
+        if right!=-1 && n==last-1:
+            temp=[]
+            buff=0
+            #초반 2초
+            if left<2:
+                temp.append(0)
+                temp.append(right)
+            else:
+                temp.append(left-2)
+                temp.append(right)
+            list.append(temp)
+            break
+        #웃는얼굴찾기 실패
+>>>>>>> 07c9deb40b7b4b2431fa2a0e686a3af67aceb4f4
         if not(detect_people(frame)):
             # 버퍼큐에 있는데 실패중
             if right != -1:
@@ -54,9 +86,16 @@ def get_highlight_times():
                 right = n
             # 버퍼큐에 있음
             else:
+<<<<<<< HEAD
                 right = n
             buff = 0
         n += 1
+=======
+                right=n
+            buff=0
+        
+        n+=1
+>>>>>>> 07c9deb40b7b4b2431fa2a0e686a3af67aceb4f4
     return list
 
     # Buffer Queue 적용

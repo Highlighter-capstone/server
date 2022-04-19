@@ -13,7 +13,7 @@ from utils.preprocessor import preprocess_input
 
 USE_WEBCAM = False  # If false, loads video file source
 # parameters for loading data and images
-emotion_model_path = './models/emotion_model.hdf5'
+emotion_model_path = './haar_cascade/models/emotion_model.hdf5'
 emotion_labels = get_labels('fer2013')
 
 # hyper-parameters for bounding boxes shape
@@ -22,7 +22,7 @@ emotion_offsets = (20, 40)
 
 # loading models
 face_cascade = cv2.CascadeClassifier(
-    './models/haarcascade_frontalface_default.xml')
+    './haar_cascade/models/haarcascade_frontalface_default.xml')
 emotion_classifier = load_model(emotion_model_path)
 
 # getting input model shapes for inference
@@ -41,7 +41,7 @@ cap = None
 if (USE_WEBCAM == True):
     cap = cv2.VideoCapture(0)  # Webcam source
 else:
-    cap = cv2.VideoCapture('./demo/dinner.mp4')  # Video file source
+    cap = cv2.VideoCapture('./haar_cascade/demo/dinner.mp4')  # Video file source
 
 while cap.isOpened():  # True:
     ret, bgr_image = cap.read()
@@ -62,6 +62,8 @@ while cap.isOpened():  # True:
             gray_face = cv2.resize(gray_face, (emotion_target_size))
         except:
             continue
+
+        print(">>" , face_coordinates[2])
 
         gray_face = preprocess_input(gray_face, True)
         gray_face = np.expand_dims(gray_face, 0)
