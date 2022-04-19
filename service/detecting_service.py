@@ -5,7 +5,7 @@ from haar_cascade.extract_emotions_by_image import get_emotion_by_image
 def get_frames(file_name):
     # frame들 이름 가져오기
     folder_name = file_name.split(".")[0]
-    dir_path = "../datasets/frame/" + folder_name
+    dir_path = "./datasets/frame/" + folder_name
     frames = []
     max_value = -1
     for root, directories, files in os.walk(dir_path):
@@ -18,8 +18,8 @@ def get_frames(file_name):
 #print(get_frames("yoonjong-2022-04-19-23:01:00.mp4"))
 
 # 하이라이트 시간 추출
-def get_highlight_times():
-    frames = get_frames()
+def get_highlight_times(file_name):
+    frames = get_frames(file_name)
     n=0
     left=-1
     right=-1
@@ -80,18 +80,18 @@ def get_highlight_times():
 
 # yolov5
 def detect_people(file_name):
-    result = detect.run(weights="../yolo/yolov5/best.pt",
-                        source="../datasets/frame/" + str(file_name))
-    if(result[detect]):
-        return detect_smile(result, "../datasets/frame/" + str(file_name))
+    print(file_name)
+    result = detect.run(weights="./yolo/yolov5/best.pt",
+                        source=file_name)
+    print(result)
+    if(result['detect']):
+        return detect_smile(result, file_name)
     else:
         return False
 
 
 # Haar Cascade
 def detect_smile(frame_data, path):
-
-
     return get_emotion_by_image(path, frame_data)
 
     
