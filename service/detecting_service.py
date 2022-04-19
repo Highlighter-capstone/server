@@ -3,15 +3,18 @@ from yolo.yolov5 import detect
 
 def get_frames(file_name):
     # frame들 이름 가져오기
-    dir_path = "../datasets/frame"
+    folder_name = file_name.split(".")[0]
+    dir_path = "../datasets/frame/" + folder_name
     frames = []
     max_value = -1
     for root, directories, files in os.walk(dir_path):
         for file in files:
-            max_value = max(int(file.split("frame")[1].split(".")[0]), max_value)
+            max_value = max(int(file.split("_")[1].split(".")[0]), max_value)
     for i in range(max_value + 1):
-        frames.append(os.path.join(dir_path, (file_name + str(i) + ".jpg")))
+        frames.append(os.path.join(dir_path, (folder_name + "_" + str(i) + ".jpg")))
     return frames
+
+#print(get_frames("yoonjong-2022-04-19-23:01:00.mp4"))
 '''
 # 하이라이트 시간 추출
 def get_highlight_times():
