@@ -15,8 +15,9 @@ def extract_highlight_times():
     video_loading_service.load_video(video_name)
     video_loading_service.split_video(video_name)
     result = detecting_service.get_highlight_times(video_name)
-    return json.dumps({'success' : False, 'time' : [43]})
+    print(result)
+    return json.dumps({'success' : True, 'time' : result})
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5001)
+    app.run(host='0.0.0.0', port=5001, threaded=False)

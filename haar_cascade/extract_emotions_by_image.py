@@ -3,13 +3,8 @@ import numpy as np
 import sys
 from keras.models import load_model
 from statistics import mode
-from utils.datasets import get_labels
-from utils.inference import detect_faces
-from utils.inference import draw_text
-from utils.inference import draw_bounding_box
-from utils.inference import apply_offsets
-from utils.inference import load_detection_model
-from utils.preprocessor import preprocess_input
+from haar_cascade.utils.datasets import get_labels
+from haar_cascade.utils.preprocessor import preprocess_input
 
 emotion_model_path = './haar_cascade/models/emotion_model.hdf5'
 emotion_labels = get_labels('fer2013')
@@ -18,7 +13,6 @@ emotion_target_size = emotion_classifier.input_shape[1:3]
 
 
 def get_emotion_by_image(image, coordinates):
-  
     bgr_image = cv2.imread(image)
     gray_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2GRAY)
   

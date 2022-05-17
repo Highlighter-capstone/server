@@ -5,7 +5,7 @@ from haar_cascade.extract_emotions_by_image import get_emotion_by_image
 def get_frames(file_name):
     # frame들 이름 가져오기
     folder_name = file_name.split(".")[0]
-    dir_path = "./datasets/frame/" + folder_name
+    dir_path = ".\\datasets\\frame\\" + folder_name
     frames = []
     max_value = -1
     for root, directories, files in os.walk(dir_path):
@@ -37,15 +37,24 @@ def get_highlight_times(file_name):
                 temp.append(0)
                 temp.append(right)
             else:
-                temp.append(left-2)
-                temp.append(right)
-            list.append(temp)
+                if(len(list) == 0):
+                    temp.append(left-2)
+                    temp.append(right)
+                else:
+                    if(list[-1][1] >= left-2):
+                        list[-1][1] = right
+                    else:
+                        temp.append(left-2)
+                        temp.append(right)
+            if(len(temp)==2):
+                list.append(temp)
             break
         #웃는얼굴찾기 실패
         if not(detect_people(frame)):
             # 버퍼큐에 있는데 실패중
             if right != -1:
                 buff += 1
+                right += 1
             # 버퍼큐에 있는데 3초동안 웃는얼굴 안나옴
             if buff == 3:
                 temp = []
@@ -55,14 +64,22 @@ def get_highlight_times(file_name):
                     temp.append(0)
                     temp.append(right)
                 else:
-                    temp.append(left-2)
-                    temp.append(right)
+                    if(len(list) == 0):
+                        temp.append(left-2)
+                        temp.append(right)
+                    else:
+                        if(list[-1][1] >= left-2):
+                            list[-1][1] = right
+                        else:
+                            temp.append(left-2)
+                            temp.append(right)
                 left = -1
                 right = -1
-                list.append(temp)
-            continue
+                if(len(temp) == 2):
+                    list.append(temp)
         # 웃는얼굴 찾음
         else:
+            print(frame)
             # 버퍼큐에 없음
             if left == -1:
                 left = n
@@ -80,10 +97,8 @@ def get_highlight_times(file_name):
 
 # yolov5
 def detect_people(file_name):
-    print(file_name)
     result = detect.run(weights="./yolo/yolov5/best.pt",
                         source=file_name)
-    print(result)
     if(result['detect']):
         return detect_smile(result, file_name)
     else:
