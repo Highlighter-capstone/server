@@ -2,6 +2,9 @@
 
 YOLO 모델을 이용한 동영상 하이라이트 추출기
 
+![클립 영상 생성](https://user-images.githubusercontent.com/80630604/171881075-46de3456-061a-43c5-a9c5-f999e7782360.png)
+
+
 ## 요약
 
 ---
