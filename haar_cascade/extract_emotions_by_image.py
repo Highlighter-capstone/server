@@ -11,11 +11,11 @@ emotion_labels = get_labels('fer2013')
 emotion_classifier = load_model(emotion_model_path)
 emotion_target_size = emotion_classifier.input_shape[1:3]
 
+smile_cascade = cv2.CascadeClassifier('./haar_cascade/smile_cascade.xml')
 
 def get_emotion_by_image(image, coordinates):
     bgr_image = cv2.imread(image)
     gray_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2GRAY)
-  
     for coordinate in coordinates.values():
         if coordinate == True:
             continue
@@ -24,23 +24,27 @@ def get_emotion_by_image(image, coordinates):
         x2 = int(coordinate[2])
         y2 = int(coordinate[3])
 
+        
 
         gray_face = gray_image[y1:y2, x1:x2]
         try:
-            gray_face = cv2.resize(gray_face, (emotion_target_size))
+            smile = smile_cascade.detectMultiScale(gray_face, 1.8, 24)
+            #gray_face = cv2.resize(gray_face, (emotion_target_size))
         except:
             continue
-
-        gray_face = preprocess_input(gray_face, True)
-        gray_face = np.expand_dims(gray_face, 0)
-        gray_face = np.expand_dims(gray_face, -1)
-        emotion_prediction = emotion_classifier.predict(gray_face)
-        emotion_probability = np.max(emotion_prediction)
-        emotion_label_arg = np.argmax(emotion_prediction)
-        emotion_text = emotion_labels[emotion_label_arg]
-      
-        if emotion_text == 'happy':
+        
+        if len(smile) != 0:
             return True
+        #gray_face = preprocess_input(gray_face, True)
+        #gray_face = np.expand_dims(gray_face, 0)
+        #gray_face = np.expand_dims(gray_face, -1)
+        #emotion_prediction = emotion_classifier.predict(gray_face)
+        #emotion_probability = np.max(emotion_prediction)
+        #emotion_label_arg = np.argmax(emotion_prediction)
+        #emotion_text = emotion_labels[emotion_label_arg]
+      
+        #if emotion_text == 'happy':
+        #    return True
     return False
 
 
