@@ -60,4 +60,5 @@ conda env create -f highlighter.yaml
 
 [CD_1_Highlighter(중간 보고서).docx](https://github.com/Highlighter-capstone/server/files/8832490/CD_1_Highlighter.docx)
 
-[CD_1_Highlighter(최종보고서).docx](https://github.com/Highlighter-capstone/server/files/8832491/CD_1_Highlighter.docx)
+[CD_1_Highlighter(최종보고서).docx](https://github.com/Highlighter-capstone/server/files/8833246/CD_1_Highlighter.docx)
+
